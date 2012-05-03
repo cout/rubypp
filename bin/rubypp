@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'rubypp'
+
+if __FILE__ == $0 then
+  input_file = ARGV[0]
+  output_file = ARGV[1]
+  rubypp(input_file, output_file)
+end
+
+
