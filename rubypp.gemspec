@@ -23,6 +23,7 @@ int main()
   END
 
   s.executables = [ 'rubypp' ]
+  s.test_files = [ 'test/test_rubypp.rb' ]
   s.has_rdoc = true
   s.extra_rdoc_files = 'README'
 end
