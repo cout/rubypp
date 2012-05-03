@@ -1,9 +1,29 @@
 class RubyPP
+  class Environment
+    def initialize(preprocessor)
+      @preprocessor = preprocessor
+    end
+
+    def puts(*lines)
+      @preprocessor.output.puts(*lines)
+    end
+
+    def binding
+      return super
+    end
+  end
+
+  attr_reader :input
+  attr_reader :output
+  attr_reader :filename
+
   def initialize(input, output, filename)
     @input = input
     @output = output
     @filename = filename
     @linenum = 1
+    @environment = Environment.new(self)
+    @binding = @environment.binding
   end
 
   def getline
@@ -20,7 +40,7 @@ class RubyPP
         break if line.nil?
         case line
         when /(.*[^\\]|^)\#\{(.*?)\}(.*)/
-          puts "#{$1}#{evaluate($2, @linenum)}#{$3}"
+          @output.puts "#{$1}#{evaluate($2, @linenum)}#{$3}"
         when /^\#ruby\s+<<(.*)/
           marker = $1
           str = ''
@@ -34,7 +54,7 @@ class RubyPP
             str << line
           end
           result = evaluate(str, evalstart)
-          puts result if not result.nil?
+          @output.puts result if not result.nil?
         when /^\#ruby\s+(.*)/
           str = line = $1
           while line[-1] == ?\\
@@ -45,9 +65,9 @@ class RubyPP
             str << line
           end
           result = evaluate(str, @linenum)
-          puts result if not result.nil?
+          @output.puts result if not result.nil?
         else
-          puts line
+          @output.puts line
         end
       end
       success = true
@@ -59,18 +79,9 @@ class RubyPP
   end
 
   def evaluate(str, linenum)
-    result = eval(str, TOPLEVEL_BINDING, @filename, linenum)
-    success = true
+    result = eval(str, @binding, @filename, linenum)
     return result
   end
-
-  def puts(line)
-    @output.puts(line)
-  end
-end
-
-def puts(line)
-  $preprocessor.puts(line)
 end
 
 def rubypp(input_file, output_file)
@@ -79,8 +90,8 @@ def rubypp(input_file, output_file)
 
   success = false
   begin
-    $preprocessor = RubyPP.new(input, output, input_file || "(stdin)")
-    $preprocessor.preprocess()
+    preprocessor = RubyPP.new(input, output, input_file || "(stdin)")
+    preprocessor.preprocess()
     success = true
   ensure
     if not success then
