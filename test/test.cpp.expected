@@ -1,0 +1,21 @@
+#include <iostream>
+
+#define FOO BAR
+#define BAR BAZ
+
+
+extern "C" {
+int foo(int a) {
+  std::cout << "1" << std::endl;
+}
+
+int foo(double a) {
+  std::cout << "2" << std::endl;
+}
+
+int main() {
+  foo(1);
+  foo(1.0);
+  std::cout << "1." << std::endl;
+}
+
