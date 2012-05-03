@@ -5,7 +5,7 @@ spec = Gem::Specification.new do |s|
   s.homepage = 'http://github.com/cout/rubypp/'
   s.author = 'Paul Brannan'
   s.email = 'curlypaul924@gmail.com'
-  s.description = <<-END
+  s.description = <<-END_DESCRIPTION
 Rubypp is a preprocessor that uses ruby to transform text.  Syntax is
 similar to the C preprocessor, e.g.:
 
@@ -18,13 +18,13 @@ END
 
 int main()
 {
-  printf("The answer is: #{a}\n");
+  printf("The answer is: \#{a}\\n");
 }
-  END
+  END_DESCRIPTION
 
   s.executables = [ 'rubypp' ]
   s.test_files = [ 'test/test_rubypp.rb' ]
   s.has_rdoc = true
-  s.extra_rdoc_files = 'README'
+  s.extra_rdoc_files = 'README.markdown'
 end
 
